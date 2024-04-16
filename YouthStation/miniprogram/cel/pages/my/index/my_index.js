@@ -34,7 +34,13 @@ Page({
 	 * 生命周期函数--监听页面显示
 	 */
 	onShow: async function () {
-		await this._login();
+    await this._login();
+    
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 4
+      })
+    }
 	},
 
 	/**

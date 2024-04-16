@@ -37,13 +37,17 @@ Page({
 	 * 生命周期函数--监听页面显示
 	 */
 	onShow: async function () {
-
 		await PassportBiz.setSetup(this);
 
 		wx.setNavigationBarTitle({
 			title: this.data.setup.SETUP_TITLE
 		});
 
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 2
+      })
+    }
 	},
 
 	/**

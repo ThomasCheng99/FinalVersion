@@ -34,7 +34,6 @@ Page({
 	onShow: async function () {
 		PassportBiz.loginSilence(this);
 
-
 		let cate = AdminNewsBiz.CATE_OPTIONS[0];
 		wx.setNavigationBarTitle({
 			title: cate
@@ -45,7 +44,11 @@ Page({
 			}
 		});
 
-
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 3
+      })
+    }
 	},
 
 	/**
