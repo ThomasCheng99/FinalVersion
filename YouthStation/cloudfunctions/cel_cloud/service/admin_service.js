@@ -274,16 +274,22 @@ class AdminService extends BaseCCMiniService {
 	}
 
 	async statusUser(id, status) {
-		this.ccminiAppError('等待开发');
-
-
+    status = Number(status)
+		let data = {
+			USER_STATUS: status
+		}
+		let where = {
+			'USER_MINI_OPENID': id
+		}
+		await UserModel.edit(where, data);
 	}
 
 	async delUser(id) {
-		this.ccminiAppError('等待开发');
+    let whereUser = {
+			USER_MINI_OPENID: id
+		}
 
-
-
+		UserModel.del(whereUser);
 	}
 	/************** 用户 END ********************* */
 
@@ -297,7 +303,28 @@ class AdminService extends BaseCCMiniService {
 		content
 	}) {
 
-		this.ccminiAppError('等待开发');
+		// 重复性判断
+		let where = {
+			NEWS_TITLE: title,
+		}
+		if (await NewsModel.count(where))
+			this.ccminiAppError('该标题已经存在');
+
+		// 赋值 
+		let data = {};
+		data.NEWS_TITLE = title;
+		data.NEWS_CONTENT = content;
+		data.NEWS_CATE = cate;
+		data.NEWS_DESC = ccminiStrUtil.fmtText(content, 100);
+
+		data.NEWS_ADMIN_ID = adminId;
+
+		let id = await NewsModel.insert(data);
+
+
+		return {
+			id
+		};
 	}
 
 	async delNews(id) {
@@ -305,7 +332,18 @@ class AdminService extends BaseCCMiniService {
 			_id: id
 		}
 
-		this.ccminiAppError('等待开发');
+		// 取出图片数据
+		let news = await NewsModel.getOne(where, 'NEWS_PIC');
+		if (!news) return;
+
+		await NewsModel.del(where);
+
+		// 异步删除图片 
+		let cloudIds = ccminiStrUtil.getArrByKey(news.NEWS_PIC, 'cloudId');
+		ccminiCloudUtil.deleteFiles(cloudIds);
+
+
+		return;
 	}
 
 	async getNewsDetail(id) {
@@ -329,7 +367,22 @@ class AdminService extends BaseCCMiniService {
 		imgList
 	}) {
 
-		this.ccminiAppError('等待开发');
+		let newList = await ccminiCloudUtil.getTempFileURL(imgList);
+
+		let news = await NewsModel.getOne(newsId, 'NEWS_PIC');
+
+		let picList = await ccminiCloudUtil.handlerCloudFiles(news.NEWS_PIC, newList);
+
+		let data = {
+			NEWS_PIC: picList
+		};
+		await NewsModel.edit(newsId, data);
+
+		let urls = ccminiStrUtil.getArrByKey(picList, 'url');
+
+		return {
+			urls
+		};
 
 	}
 
@@ -342,7 +395,20 @@ class AdminService extends BaseCCMiniService {
 		desc
 	}) {
 
-		this.ccminiAppError('等待开发');
+		let where = {
+			NEWS_TITLE: title,
+			_id: ['<>', id]
+		}
+		if (await NewsModel.count(where))
+			this.ccminiAppError('该标题已经存在');
+
+		let data = {};
+		data.NEWS_TITLE = title;
+		data.NEWS_CATE = cate;
+		data.NEWS_CONTENT = content;
+		data.NEWS_DESC = ccminiStrUtil.fmtText(desc, 100);
+
+		await NewsModel.edit(id, data);
 	}
 
 	async getNewsList({
@@ -399,11 +465,21 @@ class AdminService extends BaseCCMiniService {
 	}
 
 	async statusNews(id, status) {
-		this.ccminiAppError('等待开发');
+		let data = {
+			NEWS_STATUS: status
+		}
+		let where = {
+			_id: id,
+		}
+		return await NewsModel.edit(where, data);
 	}
 
 	async sortNews(id, sort) {
-		this.ccminiAppError('等待开发');
+		sort = Number(sort)
+		let data = {
+			NEWS_ORDER: sort
+		}
+		await NewsModel.edit(id, data);
 	}
 
 }
