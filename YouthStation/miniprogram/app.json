@@ -1,7 +1,7 @@
 {
 	"pages": [
-		"cel/pages/index/index_home",
-		"cel/pages/my/index/my_index",
+    "cel/pages/index/index_home",
+    "cel/pages/my/index/my_index",
 		"cel/pages/register/reg_step1",
 		"cel/pages/register/reg_step2",
 		"cel/pages/register/reg_step3",
@@ -24,7 +24,7 @@
 		"cel/pages/about/hint",
 		"cel/pages/news/news_board",
 		"cel/pages/face/face_index",
-		"cel/pages/face/face_select"
+    "cel/pages/face/face_select"
 	],
 	"window": {
 		"backgroundColor": "#f1f1f1",
@@ -34,6 +34,7 @@
 		"navigationBarTextStyle": "white"
 	},
 	"tabBar": {
+    "custom": true,
 		"backgroundColor": "#fefefe",
 		"color": "#D9B477",
 		"selectedColor": "#C6000E",
@@ -69,6 +70,7 @@
 				"selectedIconPath": "/cel/images/tabbar/my-active.png"
 			}
 		]
-	},
+  },
+  "style": "v2",
 	"sitemapLocation": "sitemap.json"
 }
